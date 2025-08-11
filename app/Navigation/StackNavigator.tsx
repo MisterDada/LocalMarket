@@ -1,5 +1,6 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import React from "react";
+import * as SecureStore from "expo-secure-store";
+import React, { useEffect, useState } from "react";
 
 //Auth Screens
 import ForgotPassword from "../Auth/ForgotPassword";
@@ -14,6 +15,8 @@ const AuthStack = createNativeStackNavigator();
 const InsideStack = createNativeStackNavigator();
 
 const StackNavigator = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
   const AuthStackNavigator = () => (
     <AuthStack.Navigator
       initialRouteName="Register"
@@ -38,13 +41,27 @@ const StackNavigator = () => {
     </InsideStack.Navigator>
   );
 
+  const checkStatus = async () => {
+    const user = await SecureStore.getItemAsync("token");
+    if (user) {
+      setIsLoggedIn(true);
+    }
+  };
+
+  useEffect(() => {
+    checkStatus();
+  }, []);
+
   return (
     <Stack.Navigator
       initialRouteName="Auth"
       screenOptions={{ headerShown: false }}
     >
-      <Stack.Screen name="Auth" component={AuthStackNavigator} />
-      <Stack.Screen name="Home" component={InsideStackNavigator} />
+      {isLoggedIn ? (
+        <Stack.Screen name="Home" component={InsideStackNavigator} />
+      ) : (
+        <Stack.Screen name="Auth" component={AuthStackNavigator} />
+      )}
     </Stack.Navigator>
   );
 };
