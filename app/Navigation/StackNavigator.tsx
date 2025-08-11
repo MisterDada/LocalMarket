@@ -29,14 +29,22 @@ const StackNavigator = () => {
   );
 
   const InsideStackNavigator = () => (
-    <InsideStack.Navigator>
+    <InsideStack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
       <InsideStack.Screen name="Home" component={TabNavigator} />
     </InsideStack.Navigator>
   );
 
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Navigator
+      initialRouteName="Auth"
+      screenOptions={{ headerShown: false }}
+    >
       <Stack.Screen name="Auth" component={AuthStackNavigator} />
+      <Stack.Screen name="Home" component={InsideStackNavigator} />
     </Stack.Navigator>
   );
 };

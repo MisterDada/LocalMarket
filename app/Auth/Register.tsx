@@ -1,5 +1,7 @@
-import React from "react";
+import * as secureStore from "expo-secure-store";
+import React, { useState } from "react";
 import {
+  ActivityIndicator,
   SafeAreaView,
   StatusBar,
   StyleSheet,
@@ -10,31 +12,102 @@ import {
 } from "react-native";
 
 const Login = () => {
+  const [name, setName] = useState("");
+  const [password, setPassword] = useState("");
+  const [role, setRole] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const Register = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch(
+        "https://local-market-api-dqlf.onrender.com/api/auth/Register",
+        {
+          method: "POST",
+          headers: {
+            "content-type": "application/json",
+          },
+          body: JSON.stringify({
+            name,
+            password,
+            role,
+          }),
+        }
+      );
+
+      // Check if response is OK and content-type is JSON
+      if (!res.ok) {
+        setLoading(false);
+        const text = await res.text();
+        console.error("Server error:", res.status, text);
+        return;
+      }
+      const contentType = res.headers.get("content-type");
+      if (!contentType || !contentType.includes("application/json")) {
+        const text = await res.text();
+        console.error("Unexpected response:", text);
+        return;
+      }
+
+      const data = await res.json();
+      if (!data) {
+        console.log("No data");
+        return;
+      }
+      const userId = data.user?.id;
+
+      if (userId) {
+        await secureStore.setItemAsync("token", userId);
+        setLoading(false);
+      }
+    } catch (error) {
+      console.error("Fetch error:", error);
+    }
+  };
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <StatusBar barStyle={"dark-content"} />
       <View style={styles.screen}>
         <Text style={{ fontSize: 30, marginBottom: 30, letterSpacing: 2 }}>
-          SIGN IN
+          REGISTER
         </Text>
         <TextInput
           style={styles.input}
           placeholder="Username"
           placeholderTextColor="grey"
+          value={name}
+          onChangeText={setName}
         />
         <TextInput
           style={styles.input}
           placeholder="Password"
+          autoComplete="off"
+          secureTextEntry
           placeholderTextColor="grey"
+          value={password}
+          onChangeText={setPassword}
+        />
+        <TextInput
+          style={styles.input}
+          autoComplete="off"
+          placeholder="Seller / Buyer"
+          placeholderTextColor="grey"
+          value={role}
+          onChangeText={setRole}
         />
         <Text style={{ marginTop: 20, fontSize: 16, color: "grey" }}>
-          Don't have an account?{" "}
-          <Text style={{ color: "#234f9fff" }}>Register Here</Text>
+          Already have an account?{" "}
+          <Text style={{ color: "#234f9fff" }}>Login</Text>
         </Text>
-        <TouchableOpacity style={styles.button}>
-          <Text style={{ color: "white", letterSpacing: 2, fontSize: 16 }}>
-            LOGIN
-          </Text>
+        <TouchableOpacity style={styles.button} onPress={Register}>
+          {loading ? (
+            <ActivityIndicator />
+          ) : (
+            <Text style={{ color: "white", letterSpacing: 2, fontSize: 16 }}>
+              CREATE ACCOUNT
+            </Text>
+          )}
         </TouchableOpacity>
       </View>
     </SafeAreaView>
@@ -48,7 +121,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    paddingHorizontal: 80,
+    paddingHorizontal: 60,
   },
   input: {
     borderWidth: 0,
