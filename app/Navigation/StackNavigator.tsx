@@ -16,7 +16,7 @@ const InsideStack = createNativeStackNavigator();
 const StackNavigator = () => {
   const AuthStackNavigator = () => (
     <AuthStack.Navigator
-      initialRouteName="Login"
+      initialRouteName="Register"
       screenOptions={{
         headerShown: false,
         gestureEnabled: false,
@@ -35,7 +35,7 @@ const StackNavigator = () => {
   );
 
   return (
-    <Stack.Navigator>
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Auth" component={AuthStackNavigator} />
     </Stack.Navigator>
   );
