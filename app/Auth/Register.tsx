@@ -67,6 +67,7 @@ const Login = () => {
 
       if (userId) {
         await secureStore.setItemAsync("token", userId);
+        await secureStore.setItemAsync("username", data.name);
         setLoading(false);
         navigation.navigate("Home");
       }
