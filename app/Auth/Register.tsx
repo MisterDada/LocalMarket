@@ -1,3 +1,5 @@
+import { useNavigation } from "@react-navigation/native";
+import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import * as secureStore from "expo-secure-store";
 import React, { useState } from "react";
 import {
@@ -11,7 +13,14 @@ import {
   View,
 } from "react-native";
 
+type RootStackParamList = {
+  Home: undefined;
+};
+
 const Login = () => {
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("");
@@ -59,6 +68,7 @@ const Login = () => {
       if (userId) {
         await secureStore.setItemAsync("token", userId);
         setLoading(false);
+        navigation.navigate("Home");
       }
     } catch (error) {
       console.error("Fetch error:", error);
