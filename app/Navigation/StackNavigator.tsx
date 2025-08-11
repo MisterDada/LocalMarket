@@ -37,7 +37,7 @@ const StackNavigator = () => {
         headerShown: false,
       }}
     >
-      <InsideStack.Screen name="Home" component={TabNavigator} />
+      <InsideStack.Screen name="MainHome" component={TabNavigator} />
     </InsideStack.Navigator>
   );
 

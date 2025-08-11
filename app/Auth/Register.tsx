@@ -14,7 +14,7 @@ import {
 } from "react-native";
 
 type RootStackParamList = {
-  Home: undefined;
+  MainHome: undefined;
 };
 
 const Login = () => {
@@ -64,15 +64,18 @@ const Login = () => {
         return;
       }
       const userId = data.user?.id;
+      const userName = data.user?.name;
 
       if (userId) {
         await secureStore.setItemAsync("token", userId);
-        await secureStore.setItemAsync("username", data.name);
+        await secureStore.setItemAsync("username", String(userName));
+        console.log(userName);
         setLoading(false);
-        navigation.navigate("Home");
+        navigation.navigate("MainHome");
       }
     } catch (error) {
       console.error("Fetch error:", error);
+      setLoading(false);
     }
   };
 
