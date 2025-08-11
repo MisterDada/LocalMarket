@@ -1,12 +1,17 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
-import { StyleSheet } from "react-native";
+
+//Auth Screens
 import ForgotPassword from "../Auth/ForgotPassword";
 import Login from "../Auth/Login";
 import Register from "../Auth/Register";
 
+//TabNavigator
+import TabNavigator from "../Navigation/TabNavigator";
+
 const Stack = createNativeStackNavigator();
 const AuthStack = createNativeStackNavigator();
+const InsideStack = createNativeStackNavigator();
 
 const StackNavigator = () => {
   const AuthStackNavigator = () => (
@@ -23,6 +28,12 @@ const StackNavigator = () => {
     </AuthStack.Navigator>
   );
 
+  const InsideStackNavigator = () => (
+    <InsideStack.Navigator>
+      <InsideStack.Screen name="Home" component={TabNavigator} />
+    </InsideStack.Navigator>
+  );
+
   return (
     <Stack.Navigator>
       <Stack.Screen name="Auth" component={AuthStackNavigator} />
@@ -31,5 +42,3 @@ const StackNavigator = () => {
 };
 
 export default StackNavigator;
-
-const styles = StyleSheet.create({});
