@@ -130,7 +130,7 @@ const Login = () => {
 
 export default Login;
 
-const styles = StyleSheet.create({
+export const styles = StyleSheet.create({
   screen: {
     flex: 1,
     justifyContent: "center",

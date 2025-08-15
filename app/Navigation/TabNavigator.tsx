@@ -2,7 +2,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import React from "react";
 
 //Main Screens
-import Explore from "../Screens/Explore";
+import CreateProoduct from "../Screens/CreateProduct";
 import Home from "../Screens/Home";
 import Profile from "../Screens/Profile";
 
@@ -15,7 +15,7 @@ const TabNavigator = () => {
       screenOptions={{ headerShown: false }}
     >
       <Tab.Screen name="Home" component={Home} />
-      <Tab.Screen name="Explore" component={Explore} />
+      <Tab.Screen name="Create" component={CreateProoduct} />
       <Tab.Screen name="Profile" component={Profile} />
     </Tab.Navigator>
   );

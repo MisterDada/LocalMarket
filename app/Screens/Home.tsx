@@ -3,7 +3,6 @@ import {
   FlatList,
   Image,
   SafeAreaView,
-  ScrollView,
   StatusBar,
   StyleSheet,
   Text,
@@ -11,7 +10,6 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import Filters from "../Components/Categories";
 
 export default function Index() {
   const [products, setProducts] = useState([]);
@@ -46,7 +44,7 @@ export default function Index() {
     <View style={{ padding: 16, borderBottomWidth: 1, borderColor: "#eee" }}>
       <Image
         source={{ uri: item.image?.url || "https://via.placeholder.com/100" }}
-        style={{ width: 100, height: 100, marginBottom: 8, borderRadius: 10 }}
+        style={{ width: 200, height: 250, marginBottom: 8, borderRadius: 10 }}
         resizeMode="cover"
       />
       <Text>{item.description}</Text>
@@ -83,7 +81,7 @@ export default function Index() {
               Clearance Sales
             </Text>
             <TouchableOpacity style={styles.newsButton}>
-              <Text style={{ color: "#26ab3eff" }}>% up to 50%</Text>
+              <Text style={{ color: "#222222ff" }}>% up to 50%</Text>
             </TouchableOpacity>
           </View>
           <View>
@@ -97,10 +95,6 @@ export default function Index() {
             <Text style={{ fontSize: 20 }}>Categories</Text>
             <Text style={{ color: "#26ab3eff", fontSize: 18 }}>See all</Text>
           </View>
-
-          <ScrollView horizontal>
-            <Filters />
-          </ScrollView>
         </View>
       </View>
 
@@ -127,7 +121,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   news: {
-    backgroundColor: "#2650abff",
+    backgroundColor: "#222222ff",
     height: 150,
     borderRadius: 20,
     padding: 20,
