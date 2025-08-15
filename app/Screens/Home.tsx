@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import {
   FlatList,
+  Image,
   SafeAreaView,
   ScrollView,
   StatusBar,
@@ -41,9 +42,13 @@ export default function Index() {
   useEffect(() => {
     renderProducts();
   }, []);
-
   const renderItem = ({ item }) => (
     <View style={{ padding: 16, borderBottomWidth: 1, borderColor: "#eee" }}>
+      <Image
+        source={{ uri: item.image?.url || "https://via.placeholder.com/100" }}
+        style={{ width: 100, height: 100, marginBottom: 8, borderRadius: 10 }}
+        resizeMode="cover"
+      />
       <Text>{item.description}</Text>
       <Text>₦ {item.price}</Text>
     </View>
@@ -122,7 +127,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   news: {
-    backgroundColor: "#26ab3eff",
+    backgroundColor: "#2650abff",
     height: 150,
     borderRadius: 20,
     padding: 20,
