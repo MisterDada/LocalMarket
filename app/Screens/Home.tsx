@@ -71,7 +71,7 @@ export default function Index() {
         </Text>
         <Text style={styles.productPrice}>₦ {item.price}</Text>
         <TouchableOpacity style={styles.buyButton}>
-          <Text style={{ color: "white", fontWeight: "bold" }}>
+          <Text style={{ color: "black", fontWeight: "bold" }}>
             Add to cart
           </Text>
         </TouchableOpacity>
@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
   banner: {
     marginHorizontal: 24,
     marginVertical: 16,
-    backgroundColor: "#222",
+    backgroundColor: "#8DBCC7",
     borderRadius: 18,
     padding: 24,
     alignItems: "flex-start",
@@ -222,7 +222,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   buyButton: {
-    backgroundColor: "#222",
+    backgroundColor: "#EBFFD8",
     borderRadius: 8,
     paddingVertical: 8,
     paddingHorizontal: 24,
