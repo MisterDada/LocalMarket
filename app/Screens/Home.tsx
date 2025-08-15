@@ -1,7 +1,11 @@
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import React, { useEffect, useState } from "react";
 import {
+  Dimensions,
   FlatList,
   Image,
+  Pressable,
   SafeAreaView,
   StatusBar,
   StyleSheet,
@@ -11,8 +15,21 @@ import {
   View,
 } from "react-native";
 
+export type RootStackParamList = {
+  ProductDetails: { product: string };
+};
+
+const { width } = Dimensions.get("window");
+const CARD_MARGIN = 12;
+const CARD_WIDTH = (width - CARD_MARGIN * 3) / 2;
+
 export default function Index() {
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+
   const [products, setProducts] = useState([]);
+
+  const numColumns = 2;
 
   const renderProducts = async () => {
     try {
@@ -23,115 +40,198 @@ export default function Index() {
           headers: { "Content-Type": "application/json" },
         }
       );
-
       const data = await res.json();
       if (!data?.data.length) {
-        console.log("No products found");
         setProducts([]);
         return;
       }
-
       setProducts(data.data);
     } catch (error) {
-      console.error("Error fetching products:", error);
+      setProducts([]);
     }
   };
 
   useEffect(() => {
     renderProducts();
   }, []);
+
   const renderItem = ({ item }) => (
-    <View style={{ padding: 16, borderBottomWidth: 1, borderColor: "#eee" }}>
-      <Image
-        source={{ uri: item.image?.url || "https://via.placeholder.com/100" }}
-        style={{ width: 200, height: 250, marginBottom: 8, borderRadius: 10 }}
-        resizeMode="cover"
-      />
-      <Text>{item.description}</Text>
-      <Text>₦ {item.price}</Text>
-    </View>
+    <Pressable
+      onPress={() => navigation.navigate("ProductDetails", { product: item })}
+    >
+      <View style={styles.card}>
+        <Image
+          source={{ uri: item.image?.url || "https://via.placeholder.com/100" }}
+          style={styles.productImage}
+          resizeMode="cover"
+        />
+        <Text style={styles.productName}>{item.name}</Text>
+        <Text style={styles.productDesc} numberOfLines={2}>
+          {item.description}
+        </Text>
+        <Text style={styles.productPrice}>₦ {item.price}</Text>
+        <TouchableOpacity style={styles.buyButton}>
+          <Text style={{ color: "white", fontWeight: "bold" }}>
+            Add to cart
+          </Text>
+        </TouchableOpacity>
+      </View>
+    </Pressable>
   );
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={styles.safeArea}>
       <StatusBar barStyle="dark-content" />
       <View style={styles.header}>
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          <Text style={{ fontSize: 30, fontWeight: 400 }}>Discover</Text>
-          <Text>Cart</Text>
-        </View>
-        <View>
-          <TextInput
-            placeholder="Search"
-            placeholderTextColor="grey"
-            style={styles.search}
-          />
-        </View>
+        <Text style={styles.title}>Meme Market</Text>
+        <TouchableOpacity>
+          <Text style={styles.cart}>🛒</Text>
+        </TouchableOpacity>
       </View>
-      <View style={{ paddingHorizontal: 30 }}>
-        <View style={styles.news}>
-          <View style={{ gap: 20, maxWidth: "40%" }}>
-            <Text style={{ fontSize: 30, color: "white" }}>
-              Clearance Sales
-            </Text>
-            <TouchableOpacity style={styles.newsButton}>
-              <Text style={{ color: "#222222ff" }}>% up to 50%</Text>
-            </TouchableOpacity>
-          </View>
-          <View>
-            {/*There will be an image here. Z-index of 1, so the image will overflow at the top */}
-          </View>
-        </View>
-        <View style={{ gap: 20 }}>
-          <View
-            style={{ flexDirection: "row", justifyContent: "space-between" }}
-          >
-            <Text style={{ fontSize: 20 }}>Categories</Text>
-            <Text style={{ color: "#26ab3eff", fontSize: 18 }}>See all</Text>
-          </View>
-        </View>
+      <View style={styles.searchContainer}>
+        <TextInput
+          placeholder="Search memes..."
+          placeholderTextColor="#888"
+          style={styles.searchInput}
+        />
       </View>
-
+      <View style={styles.banner}>
+        <Text style={styles.bannerText}>🔥 Big Clearance Sales!</Text>
+        <Text style={styles.bannerSub}>Up to 50% off selected items</Text>
+      </View>
       <FlatList
         data={products}
+        key={numColumns}
         keyExtractor={(item) => item._id?.toString()}
         renderItem={renderItem}
-        ListEmptyComponent={<Text>No products found.</Text>}
+        ListEmptyComponent={
+          <Text style={styles.emptyText}>No products found.</Text>
+        }
+        numColumns={numColumns}
+        contentContainerStyle={styles.listContent}
+        columnWrapperStyle={styles.columnWrapper}
+        showsVerticalScrollIndicator={false}
       />
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: "#fff",
+  },
   header: {
-    paddingHorizontal: 30,
-    gap: 20,
-    paddingVertical: 15,
+    paddingHorizontal: 24,
+    paddingTop: 18,
+    paddingBottom: 12,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    backgroundColor: "#fff",
+    borderBottomWidth: 0.5,
+    borderColor: "#eee",
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: "bold",
+    color: "#222",
+    letterSpacing: 1,
+  },
+  cart: {
+    fontSize: 26,
+  },
+  searchContainer: {
+    paddingHorizontal: 24,
+    paddingVertical: 10,
+    backgroundColor: "#fff",
+  },
+  searchInput: {
+    backgroundColor: "#ececec",
+    borderRadius: 12,
+    padding: 14,
+    fontSize: 16,
+    color: "#222",
+  },
+  banner: {
+    marginHorizontal: 24,
+    marginVertical: 16,
+    backgroundColor: "#222",
+    borderRadius: 18,
+    padding: 24,
+    alignItems: "flex-start",
+    justifyContent: "center",
+    elevation: 2,
+  },
+  bannerText: {
+    color: "#fff",
+    fontSize: 22,
+    fontWeight: "bold",
+    marginBottom: 6,
+  },
+  bannerSub: {
+    color: "#fff",
+    fontSize: 16,
+    opacity: 0.8,
+  },
+  listContent: {
+    paddingHorizontal: CARD_MARGIN,
+    paddingBottom: 30,
+  },
+  columnWrapper: {
+    justifyContent: "space-between",
+    marginBottom: CARD_MARGIN,
+  },
+  card: {
+    backgroundColor: "#fff",
+    borderRadius: 16,
+    padding: 16,
+    marginBottom: CARD_MARGIN,
+    width: CARD_WIDTH,
+    elevation: 2,
+    shadowColor: "#222",
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 2 },
+    alignItems: "center",
+  },
+  productImage: {
+    width: CARD_WIDTH - 32,
+    height: 120,
+    borderRadius: 12,
+    marginBottom: 12,
+    backgroundColor: "#ececec",
+  },
+  productName: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#222",
+    marginBottom: 4,
+    textAlign: "center",
+  },
+  productDesc: {
+    fontSize: 14,
+    color: "#666",
+    marginBottom: 8,
+    textAlign: "center",
+  },
+  productPrice: {
+    fontSize: 16,
+    color: "#222",
+    fontWeight: "bold",
     marginBottom: 10,
   },
-  search: {
-    backgroundColor: "#6c6c6c34",
-    padding: 15,
-    borderRadius: 10,
+  buyButton: {
+    backgroundColor: "#222",
+    borderRadius: 8,
+    paddingVertical: 8,
+    paddingHorizontal: 24,
+    marginTop: 4,
   },
-  news: {
-    backgroundColor: "#222222ff",
-    height: 150,
-    borderRadius: 20,
-    padding: 20,
-    marginBottom: 20,
-  },
-  newsButton: {
-    borderRadius: 20,
-    backgroundColor: "white",
-    padding: 10,
-    justifyContent: "center",
-    alignItems: "center",
+  emptyText: {
+    textAlign: "center",
+    color: "#888",
+    fontSize: 18,
+    marginTop: 40,
   },
 });

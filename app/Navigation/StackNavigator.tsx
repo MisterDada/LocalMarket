@@ -7,6 +7,9 @@ import ForgotPassword from "../Auth/ForgotPassword";
 import Login from "../Auth/Login";
 import Register from "../Auth/Register";
 
+//Main Screens
+import ProductDetails from "../Screens/ProductDetails";
+
 //TabNavigator
 import TabNavigator from "../Navigation/TabNavigator";
 
@@ -38,6 +41,7 @@ const StackNavigator = () => {
       }}
     >
       <InsideStack.Screen name="MainHome" component={TabNavigator} />
+      <InsideStack.Screen name="ProductDetails" component={ProductDetails} />
     </InsideStack.Navigator>
   );
 
