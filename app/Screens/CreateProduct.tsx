@@ -1,7 +1,11 @@
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import * as ImagePicker from "expo-image-picker";
+import * as SecureStore from "expo-secure-store";
 import React, { useState } from "react";
 import {
   ActivityIndicator,
+  Alert,
   Button,
   Image,
   SafeAreaView,
@@ -14,12 +18,19 @@ import {
   View,
 } from "react-native";
 
+type RootStackParamList = {
+  Register: undefined;
+};
+
 const CreateProduct = () => {
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
   const [category, setCategory] = useState("");
-  const [image, setImage] = useState<string | null>(null);
+  const [file, setFile] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   const pickImage = async () => {
@@ -34,15 +45,62 @@ const CreateProduct = () => {
 
     // Open the image picker
     const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      mediaTypes: "images",
       allowsEditing: false, // crop feature
       aspect: [1, 1], // aspect ratio
       quality: 1,
     });
 
     if (!result.canceled) {
-      setImage(result.assets[0].uri); // Store the image URI
+      setFile(result.assets[0].uri); // Store the image URI
     }
+  };
+
+  const create = async () => {
+    setLoading(true);
+    try {
+      const token = await SecureStore.getItemAsync("token");
+      const formData = new FormData();
+      formData.append("name", name);
+      formData.append("description", description);
+      formData.append("price", price);
+      formData.append("category", category);
+
+      if (file) {
+        formData.append("file", {
+          uri: file,
+          name: "product.jpg",
+          type: "image/jpeg",
+        } as any);
+      }
+
+      const res = await fetch(
+        "https://local-market-api-dqlf.onrender.com/api/products/createProduct",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: formData,
+        }
+      );
+      setLoading(false);
+      if (!res.ok) {
+        const errorText = await res.text();
+        console.log("Failed to create product", errorText);
+        return;
+      }
+    } catch (error) {
+      setLoading(false);
+      console.log("error creating product", error);
+    }
+  };
+
+  const handleLogout = async () => {
+    await SecureStore.deleteItemAsync("token");
+    await SecureStore.deleteItemAsync("username");
+    Alert.alert("Logged out", "You have been logged out.");
+    navigation.navigate("Register");
   };
 
   return (
@@ -71,8 +129,6 @@ const CreateProduct = () => {
         <TextInput
           style={styles.input}
           placeholder="Product description"
-          autoComplete="off"
-          secureTextEntry
           placeholderTextColor="grey"
           value={description}
           onChangeText={setDescription}
@@ -94,13 +150,15 @@ const CreateProduct = () => {
         />
 
         <Button title="Pick an image from gallery" onPress={pickImage} />
-        {image && (
+        {file && (
           <Image
-            source={{ uri: image }}
+            source={{ uri: file }}
             style={{ width: 200, height: 200, marginTop: 20 }}
           />
         )}
-        <TouchableOpacity style={styles.button}>
+      </ScrollView>
+      <View style={{ paddingHorizontal: 30 }}>
+        <TouchableOpacity style={styles.button} onPress={create}>
           {loading ? (
             <ActivityIndicator />
           ) : (
@@ -109,7 +167,16 @@ const CreateProduct = () => {
             </Text>
           )}
         </TouchableOpacity>
-      </ScrollView>
+        {/* Logout Button */}
+        <TouchableOpacity
+          style={[styles.button, { backgroundColor: "#d9534f", marginTop: 20 }]}
+          onPress={handleLogout}
+        >
+          <Text style={{ color: "white", letterSpacing: 2, fontSize: 16 }}>
+            LOGOUT
+          </Text>
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
   );
 };

@@ -65,11 +65,11 @@ const Login = () => {
       }
       const userId = data.user?.id;
       const userName = data.user?.name;
+      const token = data.token;
 
       if (userId) {
-        await secureStore.setItemAsync("token", userId);
+        await secureStore.setItemAsync("token", token);
         await secureStore.setItemAsync("username", String(userName));
-        console.log(userName);
         setLoading(false);
         navigation.navigate("MainHome");
       }
