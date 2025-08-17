@@ -14,9 +14,11 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { getProducts } from "../API/products";
 
 export type RootStackParamList = {
   ProductDetails: { product: string };
+  Cart: undefined;
 };
 
 const { width } = Dimensions.get("window");
@@ -31,28 +33,12 @@ export default function Index() {
 
   const numColumns = 2;
 
-  const renderProducts = async () => {
-    try {
-      const res = await fetch(
-        "https://local-market-api-dqlf.onrender.com/api/products/allProducts",
-        {
-          method: "GET",
-          headers: { "Content-Type": "application/json" },
-        }
-      );
-      const data = await res.json();
-      if (!data?.data.length) {
-        setProducts([]);
-        return;
-      }
-      setProducts(data.data);
-    } catch (error) {
-      setProducts([]);
-    }
-  };
-
   useEffect(() => {
-    renderProducts();
+    const fetchData = async () => {
+      const data = await getProducts();
+      setProducts(data);
+    };
+    fetchData();
   }, []);
 
   const renderItem = ({ item }) => (
@@ -84,7 +70,7 @@ export default function Index() {
       <StatusBar barStyle="dark-content" />
       <View style={styles.header}>
         <Text style={styles.title}>Meme Market</Text>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate("Cart")}>
           <Text style={styles.cart}>🛒</Text>
         </TouchableOpacity>
       </View>
@@ -105,7 +91,7 @@ export default function Index() {
         keyExtractor={(item) => item._id?.toString()}
         renderItem={renderItem}
         ListEmptyComponent={
-          <Text style={styles.emptyText}>No products found.</Text>
+          <Text style={styles.emptyText}>Loading Products...</Text>
         }
         numColumns={numColumns}
         contentContainerStyle={styles.listContent}
@@ -116,7 +102,7 @@ export default function Index() {
   );
 }
 
-const styles = StyleSheet.create({
+export const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: "#fff",

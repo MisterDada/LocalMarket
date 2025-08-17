@@ -17,6 +17,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { createProduct } from "../API/products";
 
 type RootStackParamList = {
   Register: undefined;
@@ -56,43 +57,21 @@ const CreateProduct = () => {
     }
   };
 
-  const create = async () => {
+  const handleSubmit = async () => {
     setLoading(true);
     try {
-      const token = await SecureStore.getItemAsync("token");
-      const formData = new FormData();
-      formData.append("name", name);
-      formData.append("description", description);
-      formData.append("price", price);
-      formData.append("category", category);
-
-      if (file) {
-        formData.append("file", {
-          uri: file,
-          name: "product.jpg",
-          type: "image/jpeg",
-        } as any);
-      }
-
-      const res = await fetch(
-        "https://local-market-api-dqlf.onrender.com/api/products/createProduct",
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          body: formData,
-        }
-      );
+      const newProduct = await createProduct({
+        name,
+        description,
+        price,
+        category,
+        file,
+      });
+      console.log("Product created:", newProduct);
+    } catch (err) {
+      console.log("Failed to create product", err);
+    } finally {
       setLoading(false);
-      if (!res.ok) {
-        const errorText = await res.text();
-        console.log("Failed to create product", errorText);
-        return;
-      }
-    } catch (error) {
-      setLoading(false);
-      console.log("error creating product", error);
     }
   };
 
@@ -158,7 +137,7 @@ const CreateProduct = () => {
         )}
       </ScrollView>
       <View style={{ paddingHorizontal: 30 }}>
-        <TouchableOpacity style={styles.button} onPress={create}>
+        <TouchableOpacity style={styles.button} onPress={handleSubmit}>
           {loading ? (
             <ActivityIndicator />
           ) : (

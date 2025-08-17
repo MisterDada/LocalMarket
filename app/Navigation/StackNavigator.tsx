@@ -12,6 +12,7 @@ import ProductDetails from "../Screens/ProductDetails";
 
 //TabNavigator
 import TabNavigator from "../Navigation/TabNavigator";
+import Cart from "../Screens/Cart";
 
 const Stack = createNativeStackNavigator();
 const AuthStack = createNativeStackNavigator();
@@ -42,6 +43,7 @@ const StackNavigator = () => {
     >
       <InsideStack.Screen name="MainHome" component={TabNavigator} />
       <InsideStack.Screen name="ProductDetails" component={ProductDetails} />
+      <InsideStack.Screen name="Cart" component={Cart} />
     </InsideStack.Navigator>
   );
 
