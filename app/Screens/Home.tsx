@@ -5,6 +5,7 @@ import {
   Dimensions,
   FlatList,
   Image,
+  ListRenderItem,
   Pressable,
   SafeAreaView,
   StatusBar,
@@ -17,9 +18,17 @@ import {
 import { getProducts } from "../API/products";
 
 export type RootStackParamList = {
-  ProductDetails: { product: string };
+  ProductDetails: { product: object };
   Cart: undefined;
 };
+
+interface Products {
+  _id: string;
+  name: string;
+  description: string;
+  price: string;
+  image?: { url: string };
+}
 
 const { width } = Dimensions.get("window");
 const CARD_MARGIN = 12;
@@ -41,7 +50,7 @@ export default function Index() {
     fetchData();
   }, []);
 
-  const renderItem = ({ item }) => (
+  const renderItem: ListRenderItem<Products> = ({ item }) => (
     <Pressable
       onPress={() => navigation.navigate("ProductDetails", { product: item })}
     >
