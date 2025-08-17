@@ -16,19 +16,8 @@ import {
   View,
 } from "react-native";
 import { getProducts } from "../API/products";
-
-export type RootStackParamList = {
-  ProductDetails: { product: object };
-  Cart: undefined;
-};
-
-interface Products {
-  _id: string;
-  name: string;
-  description: string;
-  price: string;
-  image?: { url: string };
-}
+import { RootStackParamList } from "../types/Navigation";
+import { Product } from "../types/Products";
 
 const { width } = Dimensions.get("window");
 const CARD_MARGIN = 12;
@@ -50,7 +39,7 @@ export default function Index() {
     fetchData();
   }, []);
 
-  const renderItem: ListRenderItem<Products> = ({ item }) => (
+  const renderItem: ListRenderItem<Product> = ({ item }) => (
     <Pressable
       onPress={() => navigation.navigate("ProductDetails", { product: item })}
     >

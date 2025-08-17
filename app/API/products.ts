@@ -1,12 +1,6 @@
 import * as SecureStore from "expo-secure-store";
 
-interface CreateProductParams {
-  name: string;
-  description: string;
-  price: string;
-  category: string;
-  file?: string | null;
-}
+import { CreateProductParams } from "../types/Products";
 
 export const createProduct = async ({
   name,

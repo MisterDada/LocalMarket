@@ -1,6 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import * as secureStore from "expo-secure-store";
 import React, { useState } from "react";
 import {
   ActivityIndicator,
@@ -12,10 +11,8 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-
-type RootStackParamList = {
-  MainHome: undefined;
-};
+import { Register } from "../API/user";
+import { RootStackParamList } from "../types/Navigation";
 
 const Login = () => {
   const navigation =
@@ -26,55 +23,13 @@ const Login = () => {
   const [role, setRole] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const Register = async () => {
-    setLoading(true);
+  const handleRegister = async () => {
     try {
-      const res = await fetch(
-        "https://local-market-api-dqlf.onrender.com/api/auth/Register",
-        {
-          method: "POST",
-          headers: {
-            "content-type": "application/json",
-          },
-          body: JSON.stringify({
-            name,
-            password,
-            role,
-          }),
-        }
-      );
-
-      // Check if response is OK and content-type is JSON
-      if (!res.ok) {
-        setLoading(false);
-        const text = await res.text();
-        console.error("Server error:", res.status, text);
-        return;
-      }
-      const contentType = res.headers.get("content-type");
-      if (!contentType || !contentType.includes("application/json")) {
-        const text = await res.text();
-        console.error("Unexpected response:", text);
-        return;
-      }
-
-      const data = await res.json();
-      if (!data) {
-        console.log("No data");
-        return;
-      }
-      const userId = data.user?.id;
-      const userName = data.user?.name;
-      const token = data.token;
-
-      if (userId) {
-        await secureStore.setItemAsync("token", token);
-        await secureStore.setItemAsync("username", String(userName));
-        setLoading(false);
-        navigation.navigate("MainHome");
-      }
+      await Register({ name, password, role });
+      navigation.navigate("MainHome");
     } catch (error) {
-      console.error("Fetch error:", error);
+      console.log("rehistration failed", error);
+    } finally {
       setLoading(false);
     }
   };
@@ -114,7 +69,7 @@ const Login = () => {
           Already have an account?{" "}
           <Text style={{ color: "#234f9fff" }}>Login</Text>
         </Text>
-        <TouchableOpacity style={styles.button} onPress={Register}>
+        <TouchableOpacity style={styles.button} onPress={handleRegister}>
           {loading ? (
             <ActivityIndicator />
           ) : (
