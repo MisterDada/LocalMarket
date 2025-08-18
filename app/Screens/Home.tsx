@@ -47,7 +47,7 @@ export default function Index() {
     >
       <View style={styles.card}>
         <Image
-          source={{ uri: item.image?.url || "https://via.placeholder.com/100" }}
+          source={{ uri: item.image?.url }}
           style={styles.productImage}
           resizeMode="cover"
         />
@@ -92,7 +92,7 @@ export default function Index() {
     <SafeAreaView style={styles.safeArea}>
       <StatusBar barStyle="dark-content" />
       <View style={styles.header}>
-        <Text style={styles.title}>Meme Market</Text>
+        <Text style={styles.title}>Local Market</Text>
         <TouchableOpacity onPress={() => navigation.navigate("Cart")}>
           <Text style={styles.cart}>🛒</Text>
         </TouchableOpacity>

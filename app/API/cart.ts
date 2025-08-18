@@ -37,11 +37,11 @@ export const getCartItems = async () => {
   try {
     const token = await SecureStore.getItemAsync("token");
     const res = await fetch(
-      "https://local-market-api-dqlf.onrender.com/api/cart/add",
+      "https://local-market-api-dqlf.onrender.com/api/cart",
       {
-        method: "POST",
+        method: "GET",
         headers: {
-          "content-type": "application/json",
+          "Content-type": "application/json",
           Authorization: `Bearer ${token}`,
         },
       }
@@ -53,7 +53,7 @@ export const getCartItems = async () => {
       return null;
     }
     const data = await res.json();
-    console.log("Cart Products...", data);
+    return data?.data || [];
   } catch (error) {
     console.error("Error fetching Products", error);
   }
