@@ -2,6 +2,7 @@ import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import React, { useEffect, useState } from "react";
 import {
+  ActivityIndicator,
   Dimensions,
   FlatList,
   Image,
@@ -15,9 +16,10 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { getProducts } from "../API/products";
-import { RootStackParamList } from "../types/Navigation";
-import { Product } from "../types/Products";
+import { addToCart } from "../api/cart";
+import { getProducts } from "../api/products";
+import { RootStackParamList } from "../Interface/Navigation";
+import { Product } from "../Interface/Products";
 
 const { width } = Dimensions.get("window");
 const CARD_MARGIN = 12;
@@ -28,7 +30,7 @@ export default function Index() {
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   const [products, setProducts] = useState([]);
-
+  const [loadingProductId, setLoadingProductId] = useState<string | null>(null);
   const numColumns = 2;
 
   useEffect(() => {
@@ -54,10 +56,33 @@ export default function Index() {
           {item.description}
         </Text>
         <Text style={styles.productPrice}>₦ {item.price}</Text>
-        <TouchableOpacity style={styles.buyButton}>
-          <Text style={{ color: "black", fontWeight: "bold" }}>
-            Add to cart
-          </Text>
+        <TouchableOpacity
+          style={styles.buyButton}
+          disabled={loadingProductId === item._id}
+          onPress={async () => {
+            setLoadingProductId(item._id); // only this item shows spinner
+            try {
+              const result = await addToCart(item._id);
+              if (result) alert("Added to cart!");
+              else alert("Failed to add product");
+            } finally {
+              setLoadingProductId(null);
+            }
+          }}
+        >
+          {loadingProductId === item._id ? (
+            <ActivityIndicator size="small" color="black" />
+          ) : (
+            <Text
+              style={{
+                color: "black",
+                fontWeight: "bold",
+                textAlign: "center",
+              }}
+            >
+              Add to cart
+            </Text>
+          )}
         </TouchableOpacity>
       </View>
     </Pressable>

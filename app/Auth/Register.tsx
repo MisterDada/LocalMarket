@@ -11,8 +11,8 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { Register } from "../API/user";
-import { RootStackParamList } from "../types/Navigation";
+import { Register } from "../api/user";
+import { RootStackParamList } from "../Interface/Navigation";
 
 const Login = () => {
   const navigation =
@@ -28,7 +28,7 @@ const Login = () => {
       await Register({ name, password, role });
       navigation.navigate("MainHome");
     } catch (error) {
-      console.log("rehistration failed", error);
+      console.log("registration failed", error);
     } finally {
       setLoading(false);
     }

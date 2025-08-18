@@ -17,7 +17,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { createProduct } from "../API/products";
+import { createProduct } from "../api/products";
 
 type RootStackParamList = {
   Register: undefined;

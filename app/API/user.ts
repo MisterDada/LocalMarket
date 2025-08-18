@@ -1,5 +1,5 @@
 import * as SecureStore from "expo-secure-store";
-import { CreateUserParams } from "../types/User";
+import { CreateUserParams } from "../Interface/User";
 
 export const Register = async ({ name, password, role }: CreateUserParams) => {
   try {
