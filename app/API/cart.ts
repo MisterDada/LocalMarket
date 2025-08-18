@@ -32,3 +32,29 @@ export const addToCart = async (productId: string, quantity: number = 1) => {
     return null;
   }
 };
+
+export const getCartItems = async () => {
+  try {
+    const token = await SecureStore.getItemAsync("token");
+    const res = await fetch(
+      "https://local-market-api-dqlf.onrender.com/api/cart/add",
+      {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (!res.ok) {
+      const text = await res.text();
+      console.log("Error", text);
+      return null;
+    }
+    const data = await res.json();
+    console.log("Cart Products...", data);
+  } catch (error) {
+    console.error("Error fetching Products", error);
+  }
+};
