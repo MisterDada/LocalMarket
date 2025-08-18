@@ -1,3 +1,4 @@
+import { CREATE_PRODUCT, GET_PRODUCTS } from "@env";
 import * as SecureStore from "expo-secure-store";
 
 import { CreateProductParams } from "../Interface/Products";
@@ -25,16 +26,13 @@ export const createProduct = async ({
       } as any);
     }
 
-    const res = await fetch(
-      "https://local-market-api-dqlf.onrender.com/api/products/createProduct",
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        body: formData,
-      }
-    );
+    const res = await fetch(`${CREATE_PRODUCT}`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: formData,
+    });
 
     if (!res.ok) {
       const errorText = await res.text();
@@ -51,13 +49,10 @@ export const createProduct = async ({
 
 export const getProducts = async () => {
   try {
-    const res = await fetch(
-      "https://local-market-api-dqlf.onrender.com/api/products/allProducts",
-      {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-      }
-    );
+    const res = await fetch(`${GET_PRODUCTS}`, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    });
     const data = await res.json();
     return data?.data || [];
   } catch (error) {

@@ -1,22 +1,20 @@
+import { REGISTER_USERS } from "@env";
 import * as SecureStore from "expo-secure-store";
 import { CreateUserParams } from "../Interface/User";
 
 export const Register = async ({ name, password, role }: CreateUserParams) => {
   try {
-    const res = await fetch(
-      "https://local-market-api-dqlf.onrender.com/api/auth/Register",
-      {
-        method: "POST",
-        headers: {
-          "content-type": "application/json",
-        },
-        body: JSON.stringify({
-          name,
-          password,
-          role,
-        }),
-      }
-    );
+    const res = await fetch(`${REGISTER_USERS}`, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        name,
+        password,
+        role,
+      }),
+    });
 
     // Check if response is OK and content-type is JSON
     if (!res.ok) {

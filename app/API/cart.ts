@@ -1,3 +1,4 @@
+import { ADD_TO_CART, GET_CART_ITEMS } from "@env";
 import * as SecureStore from "expo-secure-store";
 
 export const addToCart = async (productId: string, quantity: number = 1) => {
@@ -5,17 +6,14 @@ export const addToCart = async (productId: string, quantity: number = 1) => {
     const token = await SecureStore.getItemAsync("token");
     if (!token) throw new Error("No auth token found");
 
-    const res = await fetch(
-      "https://local-market-api-dqlf.onrender.com/api/cart/add",
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ productId, quantity }),
-      }
-    );
+    const res = await fetch(`${ADD_TO_CART}`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ productId, quantity }),
+    });
 
     if (!res.ok) {
       const text = await res.text();
@@ -36,16 +34,13 @@ export const addToCart = async (productId: string, quantity: number = 1) => {
 export const getCartItems = async () => {
   try {
     const token = await SecureStore.getItemAsync("token");
-    const res = await fetch(
-      "https://local-market-api-dqlf.onrender.com/api/cart",
-      {
-        method: "GET",
-        headers: {
-          "Content-type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    const res = await fetch(`${GET_CART_ITEMS}`, {
+      method: "GET",
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
     if (!res.ok) {
       const text = await res.text();
