@@ -99,7 +99,7 @@ export default function Index() {
       </View>
       <View style={styles.searchContainer}>
         <TextInput
-          placeholder="Search memes..."
+          placeholder="Search products..."
           placeholderTextColor="#888"
           style={styles.searchInput}
         />
