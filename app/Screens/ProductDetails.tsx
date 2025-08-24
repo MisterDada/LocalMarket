@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { addToCart } from "../api/cart";
+import { addToCartNew } from "../api/cart";
 
 export default function ProductDetails({ route }: any) {
   const { product, _id } = route.params;
@@ -59,7 +59,7 @@ export default function ProductDetails({ route }: any) {
 
         <TouchableOpacity
           style={styles.button}
-          onPress={() => addToCart(product._id)} //This function is wrong. Change this later
+          onPress={() => addToCartNew(product._id)} //This function is wrong. Change this later
         >
           <Text style={styles.buttonText}>Add to Cart</Text>
         </TouchableOpacity>

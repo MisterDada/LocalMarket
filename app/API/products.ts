@@ -1,5 +1,7 @@
-import { CREATE_PRODUCT, GET_PRODUCTS } from "@env";
 import * as SecureStore from "expo-secure-store";
+
+const CREATE_PRODUCT = process.env.CREATE_PRODUCT;
+const GET_PRODUCTS = process.env.GET_PRODUCTS;
 
 import { CreateProductParams } from "../Interface/Products";
 

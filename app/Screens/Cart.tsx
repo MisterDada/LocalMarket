@@ -10,26 +10,26 @@ import {
   Text,
   View,
 } from "react-native";
-import { getCartItems } from "../api/cart";
-import { Cart } from "../Interface/Cart";
+import { getUserCart } from "../api/cart";
+import { User } from "../Interface/User";
 
 const { width } = Dimensions.get("window");
 const CARD_MARGIN = 12;
 const CARD_WIDTH = (width - CARD_MARGIN * 3) / 2;
 
 export default function Index() {
-  const [cartItems, setCartItems] = useState<Cart[]>([]);
+  const [cartItems, setCartItems] = useState<User[]>([]);
   const numColumns = 2;
 
   useEffect(() => {
     const fetchData = async () => {
-      const data = await getCartItems();
+      const data = await getUserCart();
       setCartItems(data);
     };
     fetchData();
   }, [cartItems]);
 
-  const renderItem: ListRenderItem<Cart> = ({ item }) => (
+  const renderItem: ListRenderItem<User> = ({ item }) => (
     <View style={styles.card}>
       <Image
         source={{

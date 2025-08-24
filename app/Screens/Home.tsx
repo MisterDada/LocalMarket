@@ -16,7 +16,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { addToCart } from "../api/cart";
+import { addToCartNew } from "../api/cart";
 import { getProducts } from "../api/products";
 import { RootStackParamList } from "../Interface/Navigation";
 import { Product } from "../Interface/Products";
@@ -62,7 +62,7 @@ export default function Index() {
           onPress={async () => {
             setLoadingProductId(item._id); // only this item shows spinner
             try {
-              const result = await addToCart(item._id);
+              const result = await addToCartNew(item._id);
               if (result) alert("Added to cart!");
               else alert("Failed to add product");
             } finally {

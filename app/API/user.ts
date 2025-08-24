@@ -1,6 +1,7 @@
-import { REGISTER_USERS } from "@env";
 import * as SecureStore from "expo-secure-store";
 import { CreateUserParams } from "../Interface/User";
+
+const REGISTER_USERS = process.env.REGISTER_USERS;
 
 export const Register = async ({ name, password, role }: CreateUserParams) => {
   try {

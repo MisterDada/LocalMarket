@@ -1,7 +1,9 @@
-import { ADD_TO_CART, GET_CART_ITEMS } from "@env";
 import * as SecureStore from "expo-secure-store";
 
-export const addToCart = async (productId: string, quantity: number = 1) => {
+const ADD_TO_CART = process.env.ADD_TO_CART;
+const GET_CART_ITEMS = process.env.GET_CART_ITEMS;
+
+export const addToCartNew = async (productId: string, quantity: number = 1) => {
   try {
     const token = await SecureStore.getItemAsync("token");
     if (!token) throw new Error("No auth token found");
@@ -31,7 +33,7 @@ export const addToCart = async (productId: string, quantity: number = 1) => {
   }
 };
 
-export const getCartItems = async () => {
+export const getUserCart = async () => {
   try {
     const token = await SecureStore.getItemAsync("token");
     const res = await fetch(`${GET_CART_ITEMS}`, {
