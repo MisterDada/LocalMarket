@@ -1,6 +1,8 @@
-import { Product } from "./Products";
-
 export interface Cart {
   quantity: number;
-  product: Product;
+  _id: string;
+  name: string;
+  description: string;
+  price: string;
+  image?: { url: string };
 }

@@ -67,6 +67,7 @@ const CreateProduct = () => {
         category,
         file,
       });
+      Alert.alert("Product Added");
       console.log("Product created:", newProduct);
     } catch (err) {
       console.log("Failed to create product", err);

@@ -11,38 +11,51 @@ import {
   View,
 } from "react-native";
 import { getUserCart } from "../api/cart";
-import { User } from "../Interface/User";
+import { Cart } from "../Interface/Cart";
 
 const { width } = Dimensions.get("window");
 const CARD_MARGIN = 12;
 const CARD_WIDTH = (width - CARD_MARGIN * 3) / 2;
 
 export default function Index() {
-  const [cartItems, setCartItems] = useState<User[]>([]);
+  const [cartItems, setCartItems] = useState<Cart[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
   const numColumns = 2;
 
   useEffect(() => {
+    let mounted = true;
     const fetchData = async () => {
-      const data = await getUserCart();
-      setCartItems(data);
+      setLoading(true);
+      try {
+        const data = await getUserCart();
+        if (!mounted) return;
+        if (Array.isArray(data)) setCartItems(data);
+        else setCartItems([]);
+      } catch (err) {
+        console.error("fetch cart error", err);
+        if (mounted) setCartItems([]);
+      } finally {
+        if (mounted) setLoading(false);
+      }
     };
     fetchData();
-  }, [cartItems]);
+    return () => {
+      mounted = false;
+    };
+  }, []); // run once on mount (or use focus listener to refetch)
 
-  const renderItem: ListRenderItem<User> = ({ item }) => (
+  const renderItem: ListRenderItem<Cart> = ({ item }) => (
     <View style={styles.card}>
       <Image
-        source={{
-          uri: item.product.image?.url,
-        }}
+        source={{ uri: item.image?.url }}
         style={styles.productImage}
         resizeMode="cover"
       />
-      <Text style={styles.productName}>{item.product.name}</Text>
+      <Text style={styles.productName}>{item.name}</Text>
       <Text style={styles.productDesc} numberOfLines={2}>
-        {item.product.description}
+        {item.description}
       </Text>
-      <Text style={styles.productPrice}>₦ {item.product.price}</Text>
+      <Text style={styles.productPrice}>₦ {item.price}</Text>
     </View>
   );
 
@@ -55,7 +68,7 @@ export default function Index() {
       <FlatList
         data={cartItems}
         key={numColumns}
-        keyExtractor={(item) => item.product._id?.toString()}
+        keyExtractor={(item) => item._id}
         renderItem={renderItem}
         ListEmptyComponent={
           <Text style={styles.emptyText}>Getting Items...</Text>
